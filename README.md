@@ -9,6 +9,8 @@
 ### 데이터 모델링(ERD)
 (이미지 추가)
 
+### 기능
+- [채팅](src%2Fmain%2Fjava%2Fcom%2Fdo4you%2Fdo4you%2Fchat%2FREADME.md)
    
 ### 기술 스택 · 툴
 - 협업 툴: Jira, Slack,
