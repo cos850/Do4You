@@ -85,7 +85,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
 #### 1-3. WebSocketConfiguration 작성   
 ```WebSocketConfigurer ``` 를 구현해서 1-2 에서 만들어둔 ```WebSocketHandler```를 사용하기 위한 설정을 해준다.  
-/chat 으로 들어온 요청은 ```WebSocketHandler```를 사용해서 처리하고, 테스트를 위해 모든 
+/chat 으로 들어온 요청은 ```WebSocketHandler```를 사용해서 처리한다.
 
 ```
 @Configuration
