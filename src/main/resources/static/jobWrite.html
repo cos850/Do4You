@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 작성</title>
+</head>
+<body>
+<h2>게시글 작성</h2>
+<form id="postForm">
+    <div>
+        <label for="title">제목:</label><br>
+        <input type="text" id="title" name="title" required>
+    </div>
+    <div>
+        <label for="content">내용:</label><br>
+        <textarea id="content" name="content" rows="4" cols="50" required></textarea>
+    </div>
+    <div>
+        <label for="photo">사진 첨부:</label><br>
+        <input type="file" id="photo" name="photo" required>
+    </div>
+
+<!--    <div>-->
+<!--        <label for="date">날짜:</label><br>-->
+<!--        <input type="date" id="date" name="date" required>-->
+<!--    </div>-->
+<!--    <div>-->
+<!--        <label for="time">시간:</label><br>-->
+<!--        <input type="time" id="time" name="time" required>-->
+<!--    </div>-->
+    <div>
+        <label for="reward_content">교환물품:</label><br>
+        <input type="text" id="reward_type" name="reward_type" required>
+        <input type="text" id="reward_content" name="reward_content" required>
+    </div>
+    <div>
+        <label for="location">주소:</label><br>
+        <input type="text" id="location" name="location" required>
+        <button type="findLocation">주소 찾기</button>
+    </div>
+    <button type="submit">글쓰기</button>
+</form>
+
+<script>
+        document.getElementById("postForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // 기본 동작 방지 (폼 제출)
+            const formData = new FormData(this); // 폼 데이터 가져오기
+
+            // 폼 데이터를 JSON으로 변환
+            const jobData = {};
+            formData.forEach((value, key) => {
+                jobData[key] = value;
+            });
+
+            // 서버에 POST 요청 보내기
+            fetch('/api/jobs/write', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jobData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+                // 성공적으로 게시글을 작성한 후 할 일 (예: 페이지 새로고침)
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // 오류 발생 시 사용자에게 알림 처리
+                alert('게시글을 작성하는 도중 오류가 발생했습니다.');
+            });
+        });
+
+        document.getElementById("postForm").addEventListener("findLocation", function(event) {
+
+        });
+    </script>
+</body>
+</html>
