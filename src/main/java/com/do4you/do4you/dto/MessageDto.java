@@ -1,4 +1,4 @@
-package com.do4you.do4you.chat;
+package com.do4you.do4you.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
