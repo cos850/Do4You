@@ -2,7 +2,10 @@ package com.do4you.do4you;
 
 import com.do4you.do4you.dto.UserDto;
 import com.do4you.do4you.user.UserService;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
