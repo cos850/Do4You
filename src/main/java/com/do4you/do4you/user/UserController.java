@@ -1,5 +1,6 @@
 package com.do4you.do4you.user;
 
+import com.do4you.do4you.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

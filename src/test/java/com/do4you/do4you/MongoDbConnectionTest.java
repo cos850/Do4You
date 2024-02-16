@@ -1,6 +1,6 @@
 package com.do4you.do4you;
 
-import com.do4you.do4you.user.UserDto;
+import com.do4you.do4you.dto.UserDto;
 import com.do4you.do4you.user.UserService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
