@@ -4,7 +4,10 @@ import com.do4you.do4you.dto.ChatRoomDto;
 import com.do4you.do4you.model.ChatRoom;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ChatRoomService {
@@ -15,20 +18,7 @@ public class ChatRoomService {
     }
 
     public List<ChatRoomDto> getChatRoomsByUserId(String userId){
-        List<ChatRoom> userChatRooms = chatRoomRepository.findByFromUserIdOrToUserId(userId);
-        List<ChatRoomDto> dtos = new ArrayList<>();
-
-        System.out.println("userChatRooms count: " + userChatRooms.size() );
-        for(ChatRoom chatRoom: userChatRooms) {
-            System.out.println(chatRoom);
-            dtos.add(ChatRoomDto.builder()
-                    .chatRoomId(chatRoom.getChatRoomId())
-                    .fromUserId(chatRoom.getFromUserId())
-                    .toUserId(chatRoom.getToUserId())
-                    .build());
-        }
-
-        return dtos;
+        return chatRoomRepository.getUserChatRoom(userId);
     }
 
     public ChatRoomDto createChatRoom(ChatRoomDto chatRoomDto) {
