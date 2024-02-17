@@ -1,5 +1,6 @@
 package com.do4you.do4you.user;
 
+import com.do4you.do4you.dto.UserDto;
 import com.do4you.do4you.model.User;
 import org.springframework.stereotype.Service;
 
