@@ -26,8 +26,9 @@ public class Job {
     private String update_at;
     private String reward_type;
     private String reward_content;
+    private String location;
 
     // GeoJsonPoint 자신의 위경도 저장
-    private GeoJsonPoint location;
+    private GeoJsonPoint geoLocation;
 
 }

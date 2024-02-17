@@ -42,6 +42,7 @@
         <input type="text" id="sample6_address" placeholder="주소"><br>
         <input type="text" id="sample6_detailAddress" placeholder="상세주소">
         <input type="text" id="sample6_extraAddress" placeholder="참고항목">
+        <input type="text" id="location" placeholder="전체주소">
     </div>
     <button type="submit">글쓰기</button>
 </form>
@@ -99,11 +100,18 @@
             event.preventDefault(); // 기본 동작 방지 (폼 제출)
             const formData = new FormData(this); // 폼 데이터 가져오기
 
+            // [Soiiii] 사용자가 작성한 full location 저장
+            const location = document.getElementById("sample6_address").value + document.getElementById("sample6_detailAddress").value;
+            // [Soiiii] formData에 key, value 로 저장
+            formData.append("location", location);
+
             // 폼 데이터를 JSON으로 변환
             const jobData = {};
             formData.forEach((value, key) => {
                 jobData[key] = value;
             });
+
+            console.log('jobData:', jobData);
 
             // 서버에 POST 요청 보내기
             fetch('/api/jobs/write', {
