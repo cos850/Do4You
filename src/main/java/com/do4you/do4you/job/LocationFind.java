@@ -10,26 +10,18 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class LocationFind {
 
     public List<String> getLocation(String address) throws Exception{
-        // 주소 입력 -> 위도, 경도 좌표 추출.
-        BufferedReader io = new BufferedReader(new InputStreamReader(System.in));
-
         // 업로드 하기 전 확인 확인 확인
         String clientId = "";
         String clientSecret = "";
+        String inputLine;
 
-
-//        try {
-//            System.out.println("주소를 입력해주세요 : ");
-
-//            String address = io.readLine();
-//            String addr = URLEncoder.encode(address, "UTF-8");
-
+        try {
             String addr = URLEncoder.encode(address, "UTF-8");
             // Geocoding 개요에 나와있는 API URL 입력.
             String apiURL = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=" + addr;	// JSON
@@ -47,19 +39,12 @@ public class LocationFind {
 
             BufferedReader br;
 
-            System.out.println(Integer.valueOf(responseCode) == 200);
-            System.out.println(responseCode == 200);
-            System.out.println(Objects.equals(responseCode, "200"));
-
+            // 정상 호출이라면 읽어옴
             if (Integer.valueOf(responseCode) == 200) {
                 br = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
             } else {
-                br = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
-
-//                br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+                br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
             }
-
-            String inputLine;
 
             StringBuffer response = new StringBuffer();
 
@@ -69,8 +54,6 @@ public class LocationFind {
 
             br.close();
 
-            System.out.println(response);
-
             JSONTokener tokener = new JSONTokener(response.toString());
             JSONObject object = new JSONObject(tokener);
             JSONArray arr = object.getJSONArray("addresses");
@@ -78,41 +61,15 @@ public class LocationFind {
 
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject temp = (JSONObject) arr.get(i);
-                System.out.println("address : " + temp.get("roadAddress"));
-                System.out.println("jibunAddress : " + temp.get("jibunAddress"));
-                System.out.println("위도 : " + temp.get("y"));
-                System.out.println("경도 : " + temp.get("x"));
                 location.add((String) temp.get("y"));
                 location.add((String) temp.get("x"));
             }
 
-            System.out.println("location:" + location);
-            // JSON.simple 사용한 경우 아래와 같이 진행.
-			/*JSONParser jpr = new JSONParser();
-			JSONObject jarr = (JSONObject) jpr.parse(response.toString());
-			JSONArray arr2 = (JSONArray) jarr.get("addresses");
-
-			for (int i = 0; i < arr2.length(); i++) {
-				JSONObject temp = (JSONObject) arr.get(i);
-				System.out.println("address : " + temp.get("roadAddress"));
-				System.out.println("jibunAddress : " + temp.get("jibunAddress"));
-				System.out.println("위도 : " + temp.get("y"));
-				System.out.println("경도 : " + temp.get("x"));
-			}*/
             return location;
 
-//        }
-//        catch (Exception  e) {
-//            System.out.println(e);
-//            return e.
-//        }
-
+        }
+        catch (Exception  e) {
+            return Collections.singletonList(e.getMessage());
+        }
     }
-
-//    public static String getAddress(String address) throws UnsupportedEncodingException {
-//        String addr = URLEncoder.encode(address, "UTF-8");
-//        return addr;
-//    }
-
-
 }

@@ -16,19 +16,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Job {
     @Id
     private String id;
-
     private String title;
     private String content;
-//    private String address_latitude;
-//    private String address_longtitude;
     private String view_num;
     private String create_at;
     private String update_at;
     private String reward_type;
     private String reward_content;
+    // 사용자가 입력한 풀 주소
     private String location;
 
-    // GeoJsonPoint 자신의 위경도 저장
+    // 주소의 위도, 경도
     private GeoJsonPoint geoLocation;
-
 }

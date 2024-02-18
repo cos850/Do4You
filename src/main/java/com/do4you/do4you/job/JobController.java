@@ -27,25 +27,22 @@ public class JobController {
 
     // 글쓰기
     @PostMapping("/write")
-    public Job writeJob(@RequestBody Job job) throws Exception {
-        System.out.println("job content:" + job);
-
-        System.out.println(String.valueOf(job.getLocation()));
-
-        LocationFind lf = new LocationFind();
+    public Job writeJob(@RequestBody Job job) throws Exception{
+        // 사용자가 입력한 주소
         String addr = job.getLocation();
-        lf.getLocation(addr);
+        LocationFind lf = new LocationFind();
+
+        List<String> locationList = lf.getLocation(addr);
 
         GeoDto geoDto = new GeoDto();
-        geoDto.setLatitude(String.valueOf(job.getLocation()));
-        geoDto.setLongitude(String.valueOf(job.getLocation()));
-        System.out.println("geoDto.getLatitude():"+geoDto.getLatitude());
-        System.out.println("geoDto.getLongitude():"+geoDto.getLongitude());
+        //위도 설정
+        geoDto.setLatitude(String.valueOf(locationList.get(0)));
+        //경도 설정
+        geoDto.setLongitude(String.valueOf(locationList.get(1)));
 
         job.setGeoLocation(new GeoJsonPoint(Double.parseDouble(geoDto.getLatitude()
         ), Double.parseDouble(geoDto.getLongitude())));
         return jobRepository.save(job);
-
     }
 
     @PutMapping("/{id}")
@@ -58,15 +55,5 @@ public class JobController {
     public void deleteJob(@PathVariable String id) {
         jobRepository.deleteById(id);
     }
-
-//    @PostMapping("/job")
-//    @ResponseBody
-//    public String writeJob(@RequestBody GeoDto geoDto){
-//        Job job = new Job();
-//        job.setTitle("New");
-//        job.setLocation(new GeoJsonPoint(Double.parseDouble(geoDto.getLatitude()
-//        ), Double.parseDouble(geoDto.getLongitude())));
-//        return jobRepository.save(job).getId();
-//    }
 }
 
