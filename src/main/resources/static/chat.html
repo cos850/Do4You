@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script src="js/chat-socket.js"></script>
+    <script src="js/chat.js"></script>
+    <style>
+        body {
+            background-color: #f0f2f5;
+        }
+        .fixed-title {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 1000;
+        }
+        #chat-list {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+        .col-md-9 {
+            background-color: #ffffff;
+            height: calc(100vh - 80px);
+        }
+        #chat-window {
+            border-radius: 8px;
+            padding: 20px;
+            height: calc(100vh - 170px);
+            overflow-y: auto;
+        }
+        .chat-message {
+            position: relative;
+            max-width: 70%;
+            margin-bottom: 10px;
+            clear: both;
+        }
+        .partner {
+            float: left;
+            background-color: #d2eafb;
+            border-radius: 20px;
+            padding: 10px 20px;
+        }
+        .me {
+            float: right;
+            background-color: #a0d8f7;
+            border-radius: 20px;
+            padding: 10px 20px;
+        }
+        /* 텍스트 정렬 및 개행 설정 */
+        .chat-message p {
+            word-wrap: break-word; /* 텍스트가 말풍선을 벗어날 때 개행 */
+            text-align: center; /* 가로 중앙 정렬 */
+            margin: 0; /* 디폴트 마진 제거 */
+            line-height: 1.5; /* 줄 높이 설정 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        .chat-input {
+            width: calc(100% - 30px);
+            background-color: #ffffff;
+            padding: 15px;
+            border-top: 1px solid #ccc;
+            height: 50px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="chat-root" class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <div id="chat-list">
+                <h3 class="fixed-title">채팅방 목록</h3>
+                <ul class="list-group">
+                    <a id="chat-list-item-template" class="list-group-item hidden">
+                        <div class="chatroom-header d-flex justify-content-between align-items-center">
+                            <span class="chatroom-name fw-bold"></span>
+                            <span class="chatroom-count badge bg-danger rounded-pill" disabled="true"></span>
+                        </div>
+                        <div class="chatroom-message"></div>
+                    </a>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div id="chat-area" class="hidden">
+                <div id="chat-window">
+                    <h3 class="fixed-title">채팅창</h3>
+                    <div id="chat-messages"></div>
+                </div>
+                <div class="chat-input input-group mb-3">
+                    <textarea class="form-control" placeholder="메세지를 입력하세요" rows="2"></textarea>
+                    <button class="btn btn-outline-primary send-button" type="button">전송</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    window.addEventListener("load", function (event) {
+        console.log('load');
+        Chat.initChatRooms();
+    });
+</script>
+</body>
+</html>
