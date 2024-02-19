@@ -1,6 +1,6 @@
 package com.do4you.do4you.chat;
 
-import org.springframework.lang.NonNullApi;
+import com.do4you.do4you.dto.MessageDto;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;

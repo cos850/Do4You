@@ -17,4 +17,7 @@ public class ChatRoomDto {
 
     private User partner;
     private String lastMessage;
+
+    @Builder.Default
+    private int unreadMessageCount = 0;
 }

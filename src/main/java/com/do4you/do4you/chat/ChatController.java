@@ -9,17 +9,12 @@ import java.util.Map;
 @Controller
 public class ChatController {
 
-    @MessageMapping("/hello")
-    @SendTo("/topic/greetings")
+    @MessageMapping("/chat/message")
+    @SendTo("/chat/room/{roomId}")
     public Map sendMessageTest(Map message) {
         System.out.println(message);
 
-        return Map.of("content", message.get("name"));
+        return Map.of("content", message.get("message"));
     }
-
-
-
-
-
 
 }
