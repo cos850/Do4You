@@ -4,9 +4,11 @@ import com.do4you.do4you.dto.GeoDto;
 import com.do4you.do4you.model.Job;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/jobs")
@@ -20,9 +22,11 @@ public class JobController {
         return jobRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public Job getJobById(@PathVariable String id) {
-        return jobRepository.findById(id).orElse(null);
+    @GetMapping("/job")
+    public ResponseEntity<Job> getJobById(@PathVariable String id) {
+        Optional<Job> job = jobRepository.findById("65d3c8f9826cf34714e5c2af");
+        System.out.println("22@@##@job:" + job);
+        return job.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // 글쓰기
@@ -32,6 +36,7 @@ public class JobController {
         String addr = job.getLocation();
         LocationFind lf = new LocationFind();
 
+        // 입력된 주소에서 위도, 경도 가져옴
         List<String> locationList = lf.getLocation(addr);
 
         GeoDto geoDto = new GeoDto();
