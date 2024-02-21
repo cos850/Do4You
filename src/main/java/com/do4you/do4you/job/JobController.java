@@ -4,11 +4,10 @@ import com.do4you.do4you.dto.GeoDto;
 import com.do4you.do4you.model.Job;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
-import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/jobs")
@@ -22,11 +21,19 @@ public class JobController {
         return jobRepository.findAll();
     }
 
-    @GetMapping("/job")
-    public ResponseEntity<Job> getJobById(@PathVariable String id) {
-        Optional<Job> job = jobRepository.findById("65d3c8f9826cf34714e5c2af");
+    // 글 상세보기
+    @GetMapping("/job/{id}")
+    public String getJobById(@PathVariable String id, Model model) {
+        // MongoDB에서 작업을 가져옵니다.
+        Job job = jobRepository.findById(id).orElse(null);
+
+//        Optional<Job> job = jobRepository.findById("65d3c8f9826cf34714e5c2af");
+//        Optional<Job> job = jobRepository.findById(id);
         System.out.println("22@@##@job:" + job);
-        return job.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+
+        model.addAttribute("job", job);
+//        return job.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return "jobDetail";
     }
 
     // 글쓰기
