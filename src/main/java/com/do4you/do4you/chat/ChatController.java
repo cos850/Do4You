@@ -1,5 +1,6 @@
 package com.do4you.do4you.chat;
 
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -9,12 +10,12 @@ import java.util.Map;
 @Controller
 public class ChatController {
 
-    @MessageMapping("/chat/message")
+    @MessageMapping("/message/{roomId}")
     @SendTo("/chat/room/{roomId}")
-    public Map sendMessageTest(Map message) {
-        System.out.println(message);
+    public Map sendMessageTest(@DestinationVariable String roomId, Map message) {
+        System.out.println("client message\nroomId=" + roomId + "\n" + message);
 
-        return Map.of("content", message.get("message"));
+        return message;
     }
 
 }

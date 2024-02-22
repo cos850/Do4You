@@ -113,7 +113,7 @@ const Chat = {
         const userId = this.getUserId();
         const root = document.getElementById('chat-window');
         const chatMessageRoot = root.getElementById("chat-messages");
-        root.removeAttribute('hidden');
+        root.classList.remove('hidden');
         chatMessageRoot.innerHTML = '';
 
         console.log('chatMessages: ', data);
@@ -122,9 +122,9 @@ const Chat = {
             const messageEl = document.createElement('div');
 
             if(message.userId === userId)
-                messageEl.classList.add('chat-message-me');
+                messageEl.classList.add('chat-message me');
             else
-                messageEl.classList.add('chat-message-partner');
+                messageEl.classList.add('chat-message partner');
 
             chatMessageRoot.appendChild(messageEl);
         }
@@ -134,6 +134,20 @@ const Chat = {
 
         console.log('sendMessage: ' + message);
         ChatSocket.sendMessage(roomObj, message);
+    },
+    appendChatMessage(message){
+        const messageRoot = document.getElementById("chat-messages");
+        const messageEl = document.createElement('div');
+        const p = document.createElement('p');
+        p.innerText = message.message;
+
+        if(message.userId === this.getUserId())
+            messageEl.setAttribute('class', 'chat-message me');
+        else
+            messageEl.setAttribute('class', 'chat-message partner');
+
+        messageEl.appendChild(p);
+        messageRoot.appendChild(messageEl);
     }
 }
 
