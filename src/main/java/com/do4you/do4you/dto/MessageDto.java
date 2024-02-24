@@ -22,6 +22,7 @@ public class MessageDto {
 
     public Message toDocument(){
         return Message.builder()
+                .messageId(messageId)
                 .roomId(roomId)
                 .userId(userId)
                 .content(content)

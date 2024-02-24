@@ -1,8 +1,13 @@
 package com.do4you.do4you.chat.message;
 
 import com.do4you.do4you.model.Message;
-import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface MessageRepository extends MongoRepository<Message, String> {
+import java.util.List;
+
+public interface MessageRepository {
+
+    Message save(Message message);
+    void deleteById(String messageId);
+    List<Message> page(String roomId, Message lastId, int pageSize);
 
 }

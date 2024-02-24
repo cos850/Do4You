@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MessageService {
@@ -16,8 +17,10 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
-    public List<MessageDto> getPage(String userId, String chatRoomDto) {
-        return null;
+    public List<MessageDto> getPage(String roomId, MessageDto last, int pageSize) {
+        return messageRepository.page(roomId, last.toDocument(), pageSize).stream()
+                .map(MessageDto::toDto)
+                .collect(Collectors.toList());
     }
 
     public MessageDto save(MessageDto dto) {
