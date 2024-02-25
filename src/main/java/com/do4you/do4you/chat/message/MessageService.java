@@ -18,7 +18,7 @@ public class MessageService {
     }
 
     public List<MessageDto> getPage(String roomId, MessageDto last, int pageSize) {
-        return messageRepository.page(roomId, last.toDocument(), pageSize).stream()
+        return messageRepository.page(roomId, last == null ? null : last.toDocument(), pageSize).stream()
                 .map(MessageDto::toDto)
                 .collect(Collectors.toList());
     }

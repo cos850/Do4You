@@ -2,10 +2,9 @@ package com.do4you.do4you.chat.message;
 
 import com.do4you.do4you.dto.MessageDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/chat/message")
@@ -18,7 +17,12 @@ public class MessageController {
     }
 
     @PostMapping
-    public MessageDto save(@RequestBody MessageDto dto){
-        return messageService.save(dto);
+    public MessageDto save(@RequestBody MessageDto messageDto){
+        return messageService.save(messageDto);
+    }
+
+    @GetMapping("/recent/{roomId}")
+    public List<MessageDto> getRecentMessages(@PathVariable String roomId){
+        return messageService.getPage(roomId, null, 10);
     }
 }

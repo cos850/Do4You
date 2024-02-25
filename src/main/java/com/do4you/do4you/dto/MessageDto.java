@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MessageDto {
     private String messageId;
-    private String roomId;
+    private String chatRoomId;
     private String userId;
     private String content;
     private String sendAt;
@@ -23,7 +23,7 @@ public class MessageDto {
     public Message toDocument(){
         return Message.builder()
                 .messageId(messageId)
-                .roomId(roomId)
+                .roomId(chatRoomId)
                 .userId(userId)
                 .content(content)
                 .sendAt(sendAt)
@@ -34,7 +34,7 @@ public class MessageDto {
     public static MessageDto toDto(Message doc){
         return MessageDto.builder()
                 .messageId(doc.getMessageId())
-                .roomId(doc.getRoomId())
+                .chatRoomId(doc.getRoomId())
                 .userId(doc.getUserId())
                 .content(doc.getContent())
                 .sendAt(doc.getSendAt())

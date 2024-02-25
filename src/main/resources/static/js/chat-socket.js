@@ -22,6 +22,6 @@ const ChatSocket = {
         console.log("Disconnected");
     },
     sendMessage: function(roomObj, message) {
-        stompClient.send("/chat/client/message/" + roomObj.chatRoomId, {}, JSON.stringify({'message': message, ...roomObj}));
+        stompClient.send("/chat/client/message/" + roomObj.chatRoomId, {}, JSON.stringify({...roomObj, 'content': message}));
     }
 }
