@@ -23,20 +23,19 @@ public class ChatRoomCustomRepositoryImpl implements ChatRoomCustomRepository {
     public List<ChatRoomDto> getUserChatRoom(String userId) {
         System.out.println("userId is " + userId);
 
-        MatchOperation matchOp = Aggregation.match(Criteria.where("fromUserId").is(userId));
+        MatchOperation matchOp = Aggregation.match(Criteria.where("userId").is(userId));
         LookupOperation lookupOp = LookupOperation.newLookup()
                 .from("User")
-                .localField("toUserId")
+                .localField("partnerId")
                 .foreignField("_id")
                 .as("partner");
 
         ProjectionOperation projectOp = Aggregation.project()
-                .and("_id").as("chatRoomId")
-                .and("fromUserId").as("fromUserId")
-                .and("toUserId").as("toUserId")
+                .and("chatRoomId").as("chatRoomId")
+                .and("userId").as("userId")
+                .and("partnerId").as("partnerId")
                 .and(ArrayOperators.ArrayElemAt.arrayOf("partner").elementAt(0))
                 .as("partner");
-
 
         List<ChatRoomDto> chatRoomDtos = mongoTemplate.aggregate(
                 Aggregation.newAggregation(matchOp, lookupOp, projectOp),

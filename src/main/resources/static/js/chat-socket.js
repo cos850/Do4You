@@ -8,9 +8,10 @@ const ChatSocket = {
             console.log('Connected: ' + frame);
 
             // subscribe: 브로커가 보내는 메세지를 수신할 경로
-            stompClient.subscribe('/chat/room/' + roomObj.chatRoomId, function (greeting) {
-                showGreeting(JSON.parse(greeting.body).content);
-            });
+            stompClient.subscribe('/chat/room/' + roomObj.chatRoomId, function (response) {
+                console.log(response);
+                Chat.appendChatMessage(JSON.parse(response.body));
+            }.bind(this));
         });
     },
     disconnect: function() {
@@ -20,10 +21,7 @@ const ChatSocket = {
         setConnected(false);
         console.log("Disconnected");
     },
-    sendMessage: function(roomId, message) {
-        stompClient.send("/chat/message/" + roomId, {}, JSON.stringify({'message': message}));
-    },
-    showGreeting: function(message) {
-        $("#greetings").append("<tr><td>" + message + "</td></tr>");
+    sendMessage: function(roomObj, message) {
+        stompClient.send("/chat/client/message/" + roomObj.chatRoomId, {}, JSON.stringify({...roomObj, 'content': message}));
     }
 }

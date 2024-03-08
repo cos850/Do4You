@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class ChatRoomService {
@@ -21,28 +20,45 @@ public class ChatRoomService {
         return chatRoomRepository.getUserChatRoom(userId);
     }
 
+    /**
+     * 채팅방 생성 함수
+     * 한 사용자가 생성을 요청하면 대상 유저의 채팅방도 동일한 채팅방ID로 함께 생성한다.
+     *
+     * @param chatRoomDto
+     * @return
+     */
     public ChatRoomDto createChatRoom(ChatRoomDto chatRoomDto) {
-        String chatRoomId = UUID.randomUUID().toString();
-        chatRoomRepository.save(ChatRoom.builder()
-                .chatRoomId(chatRoomId)
-                .fromUserId(chatRoomDto.getFromUserId())
-                .toUserId(chatRoomDto.getToUserId())
-                .build());
+        String chatRoomId = chatRoomDto.getUserId() + "-" + chatRoomDto.getPartnerId();
 
-        return getChatRoomById(chatRoomId);
+        ChatRoom createUserChatRoom = ChatRoom.builder()
+                .chatRoomId(chatRoomId)
+                .userId(chatRoomDto.getUserId())
+                .partnerId(chatRoomDto.getPartnerId())
+                .build();
+        ChatRoom partnerChatRoom = ChatRoom.builder()
+                .chatRoomId(chatRoomId)
+                .userId(chatRoomDto.getPartnerId())
+                .partnerId(chatRoomDto.getUserId())
+                .build();
+
+        chatRoomRepository.saveAll(List.of(createUserChatRoom, partnerChatRoom));
+
+        return getChatRoomById(chatRoomId, chatRoomDto.getUserId());
     }
 
-    public ChatRoomDto getChatRoomById(String chatRoomId) {
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow();
+    public ChatRoomDto getChatRoomById(String chatRoomId, String userId) {
+        ChatRoom chatRoom = chatRoomRepository.findByChatRoomIdAndUserId(chatRoomId, userId).orElseThrow();
         return ChatRoomDto.builder()
                 .chatRoomId(chatRoom.getChatRoomId())
-                .fromUserId(chatRoom.getFromUserId())
-                .toUserId(chatRoom.getToUserId())
+                .userId(chatRoom.getUserId())
+                .partnerId(chatRoom.getPartnerId())
                 .build();
     }
 
+    // mongoDB의 경우, 특정 필드만 변경하여 저장할 경우 해당 row가 다시 만들어진다. 즉 기존 row가 삭제되고 id가 새로 생성됨
+    // 따라서 update 대신 계속 row가 전체적으로 변경될 데이터에 적합하다.
     public ChatRoomDto updateChatRoom(ChatRoomDto chatRoomDto) {
-        Optional<ChatRoom> chatRoomOpt = chatRoomRepository.findById(chatRoomDto.getChatRoomId());
+        Optional<ChatRoom> chatRoomOpt = chatRoomRepository.findByChatRoomIdAndUserId(chatRoomDto.getChatRoomId(), chatRoomDto.getUserId());
 
         chatRoomOpt.ifPresentOrElse(chatRoom -> {
             // TODO - ChatRoomService: status 업데이트 추후 추가
@@ -52,7 +68,7 @@ public class ChatRoomService {
             throw new NoSuchElementException("No value present");
         });
 
-        return getChatRoomById(chatRoomDto.getChatRoomId());
+        return getChatRoomById(chatRoomDto.getChatRoomId(), chatRoomDto.getUserId());
     }
 
     public void deleteChatRoomById(String chatRoomId) {

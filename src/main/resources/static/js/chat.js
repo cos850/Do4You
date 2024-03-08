@@ -86,9 +86,22 @@ const Chat = {
         const sendBtnClicks = sendBtn.querySelectorAll('[onClick]');
         sendBtnClicks.forEach(listener=> {
             sendBtn.removeEventListener('click', listener);
-        })
+        });
         sendBtn.addEventListener('click', function(){
             this.sendMessage(roomObj);
+        }.bind(this));
+
+        // input에 이벤트 추가
+        const input = chatArea.querySelector(".chat-input input");
+        const inputEnter = input.querySelectorAll('[onkeydown]');
+        inputEnter.forEach(listener=> {
+            sendBtn.removeEventListener('keydown', listener);
+        });
+        input.addEventListener('keydown', function(event){
+            console.log('onkeydown !!')
+            if(event.keyCode == 13) {// 13 is enter
+                this.sendMessage(roomObj);
+            }
         }.bind(this));
 
         // 대화 내용 불러오기
@@ -96,7 +109,7 @@ const Chat = {
         params.append("roomId", roomObj.chatRoomId);
         params.append('userId', this.getUserId());
 
-        fetch("/chat/message")
+        fetch("/chat/message/recent/" + roomObj.chatRoomId)
             .then(response => {
                 console.log('response: ', response);
                 return response.json()
@@ -111,29 +124,45 @@ const Chat = {
     },
     makeChatMessageElements: function(data){
         const userId = this.getUserId();
-        const root = document.getElementById('chat-window');
-        const chatMessageRoot = root.getElementById("chat-messages");
-        root.removeAttribute('hidden');
-        chatMessageRoot.innerHTML = '';
+        const messageRoot = document.getElementById("chat-messages");
+        messageRoot.innerHTML = '';
 
-        console.log('chatMessages: ', data);
+        console.log('init recent messages: ', data);
         for (let message of data) {
-            console.log(message);
             const messageEl = document.createElement('div');
+            const p = document.createElement('p');
+            p.innerText = message.content;
 
             if(message.userId === userId)
-                messageEl.classList.add('chat-message-me');
+                messageEl.setAttribute('class', 'chat-message me');
             else
-                messageEl.classList.add('chat-message-partner');
+                messageEl.setAttribute('class', 'chat-message partner');
 
-            chatMessageRoot.appendChild(messageEl);
+            messageEl.appendChild(p);
+            messageRoot.appendChild(messageEl);
         }
     },
     sendMessage: function(roomObj) {
-        const message = document.querySelector(".chat-input textarea").value;
+        const input = document.querySelector(".chat-input input");
 
-        console.log('sendMessage: ' + message);
-        ChatSocket.sendMessage(roomObj, message);
+        console.log('sendMessage: ' + input.value);
+        ChatSocket.sendMessage(roomObj, input.value);
+
+        input.value = '';
+    },
+    appendChatMessage(message){
+        const messageRoot = document.getElementById("chat-messages");
+        const messageEl = document.createElement('div');
+        const p = document.createElement('p');
+        p.innerText = message.content;
+
+        if(message.userId === this.getUserId())
+            messageEl.setAttribute('class', 'chat-message me');
+        else
+            messageEl.setAttribute('class', 'chat-message partner');
+
+        messageEl.appendChild(p);
+        messageRoot.appendChild(messageEl);
     }
 }
 

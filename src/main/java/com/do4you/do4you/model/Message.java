@@ -19,10 +19,10 @@ public class Message {
     private String userId;
     private String content;
     private String sendAt;
-    private String isChecked;
+    private boolean isChecked;
 
     @Builder
-    public Message(String messageId, String roomId, String userId, String content, String sendAt, String isChecked) {
+    public Message(String messageId, String roomId, String userId, String content, String sendAt, boolean isChecked) {
         this.messageId = messageId;
         this.roomId = roomId;
         this.userId = userId;

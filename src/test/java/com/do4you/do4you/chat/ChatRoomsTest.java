@@ -52,20 +52,14 @@ class ChatRoomsTest {
 
 		chatRoomDtos.add(ChatRoomDto.builder()
 				.chatRoomId("TestChatRoom-1")
-				.fromUserId(fromUserDto.getUserId())
-				.toUserId(toUserDto.getUserId())
+				.userId(fromUserDto.getUserId())
+				.partnerId(toUserDto.getUserId())
 				.build());
 
 		chatRoomDtos.add(ChatRoomDto.builder()
-				.chatRoomId("TestChatRoom-onlyFrom")
-				.fromUserId(fromUserDto.getUserId())
-				.toUserId(null)
-				.build());
-
-		chatRoomDtos.add(ChatRoomDto.builder()
-				.chatRoomId("TestChatRoom-onlyTo")
-				.fromUserId(null)
-				.toUserId(toUserDto.getUserId())
+				.chatRoomId("TestChatRoom-1")
+				.userId(toUserDto.getUserId())
+				.partnerId(fromUserDto.getUserId())
 				.build());
 	}
 
