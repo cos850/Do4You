@@ -16,7 +16,28 @@ public class JobController {
     private MongoClient client;
 
     @Autowired
+    private JobService jobService;
+
+    @Autowired
     private JobRepository jobRepository;
+
+    @GetMapping("/jobList/{id}")
+    public String findById(@PathVariable String id, Model model) {
+        System.out.println("id:"+id);
+        List<Job> jobList = jobRepository.findAll();
+        Job jobId = jobService.details(id);
+        System.out.println(jobId);
+        System.out.println("jobList.get(0).getId():"+jobList.get(0).getId());
+        model.addAttribute("jobs", jobId);
+        return "jobDetail";
+    }
+
+    @GetMapping("/jobList.html")
+    public String getJobList(Model model) {
+        List<Job> jobList = jobRepository.findAll();
+        model.addAttribute("jobs", jobList);
+        return "jobList";
+    }
 
     @GetMapping("/jobDetail.html")
     public String getJobDetail(Model model) {
