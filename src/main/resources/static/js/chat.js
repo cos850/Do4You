@@ -62,15 +62,15 @@ const Chat = {
             console.log('error: ', error);
         });
     },
-    initChatWindow: function(roomObj) {
-        console.log('initChatWindow: ', roomObj)
+    initChatWindow: function(roomId) {
+        console.log('initChatWindow: ', roomId)
 
         // connect websocket
-        ChatSocket.connect(roomObj);
+        ChatSocket.connect(roomId);
 
         // 페이지를 벗어날 때 disconnect 호출
         window.addEventListener('beforeunload', function(event) {
-            ChatSocket.disconnect(roomObj);
+            ChatSocket.disconnect();
         });
 
         // 채팅방 내부 보이기
