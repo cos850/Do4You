@@ -7,6 +7,8 @@ import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+
 @ToString
 @Getter
 @NoArgsConstructor
@@ -18,11 +20,11 @@ public class Message {
     private String roomId;
     private String userId;
     private String content;
-    private String sendAt;
+    private LocalDateTime sendAt;
     private boolean isChecked;
 
     @Builder
-    public Message(String messageId, String roomId, String userId, String content, String sendAt, boolean isChecked) {
+    public Message(String messageId, String roomId, String userId, String content, LocalDateTime sendAt, boolean isChecked) {
         this.messageId = messageId;
         this.roomId = roomId;
         this.userId = userId;

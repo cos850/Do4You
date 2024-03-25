@@ -2,6 +2,8 @@ package com.do4you.do4you.chat.room;
 
 import com.do4you.do4you.dto.ChatRoomDto;
 import com.do4you.do4you.model.ChatRoom;
+import com.do4you.do4you.model.User;
+import com.do4you.do4you.user.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,9 +13,11 @@ import java.util.Optional;
 @Service
 public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
+    private final UserRepository userRepository;
 
-    public ChatRoomService(ChatRoomRepository chatRoomRepository) {
+    public ChatRoomService(ChatRoomRepository chatRoomRepository, UserRepository userRepository) {
         this.chatRoomRepository = chatRoomRepository;
+        this.userRepository = userRepository;
     }
 
     public List<ChatRoomDto> getChatRoomsByUserId(String userId){
@@ -48,10 +52,14 @@ public class ChatRoomService {
 
     public ChatRoomDto getChatRoomById(String chatRoomId, String userId) {
         ChatRoom chatRoom = chatRoomRepository.findByChatRoomIdAndUserId(chatRoomId, userId).orElseThrow();
+
+        System.out.println("getChatRoom: " + chatRoom);
+
         return ChatRoomDto.builder()
                 .chatRoomId(chatRoom.getChatRoomId())
                 .userId(chatRoom.getUserId())
                 .partnerId(chatRoom.getPartnerId())
+                .partner(userRepository.findById(userId).orElseThrow())
                 .build();
     }
 

@@ -25,4 +25,9 @@ public class MessageController {
     public List<MessageDto> getRecentMessages(@PathVariable String roomId){
         return messageService.getPage(roomId, null, 10);
     }
+
+    @GetMapping("/page/{roomId}")
+    public List<MessageDto> getRecentMessages(@PathVariable String roomId, @RequestBody MessageDto message){
+        return messageService.getPage(roomId, message, 10);
+    }
 }

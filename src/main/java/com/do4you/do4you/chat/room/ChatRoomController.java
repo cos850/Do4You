@@ -17,8 +17,13 @@ public class ChatRoomController {
         this.chatRoomService = chatRoomService;
     }
 
-    @GetMapping("/{userId}")
-    public List<ChatRoomDto> getChatRoomsByUserId(@PathVariable String userId) {
+    @GetMapping("/{roomId}")
+    public ChatRoomDto getChatRoomById(@PathVariable String roomId, @RequestParam String userId) {
+        return chatRoomService.getChatRoomById(roomId, userId);
+    }
+
+    @GetMapping("/list")
+    public List<ChatRoomDto> getChatRoomsByUserId(@RequestParam String userId) {
         return chatRoomService.getChatRoomsByUserId(userId);
     }
 

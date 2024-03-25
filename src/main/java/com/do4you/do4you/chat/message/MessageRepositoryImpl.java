@@ -36,8 +36,12 @@ public class MessageRepositoryImpl implements MessageRepository{
         Criteria where = where("roomId").is(roomId);
 
         if(last != null)
-            where.and("sendAt").lt(last.getSendAt());
+            where.and("sendAt").lt(last.getSendAt());   // messageId 로 변경
 
-        return template.find(query(where).with(Sort.by(Sort.Order.desc("sendAt"))).limit(pageSize), Message.class);
+        return template.find(
+            query(where)
+                .with(Sort.by(Sort.Direction.DESC, "sendAt"))
+                .limit(pageSize)
+            , Message.class);
     }
 }

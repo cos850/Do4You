@@ -2,6 +2,17 @@ const chatConst = {
     chatRoomIdAttrName: "data-room-id"
 }
 
+async function fetchData(url) {
+    try {
+        const response = await fetch(url);
+        const data = await response.json(); // 서버로부터 받은 데이터를 JSON 형태로 변환
+        console.log(url + ': ', data);  // 데이터 출력
+        return data;    // data => Promise.resolve(data)
+    } catch (error) {
+        console.error("Error fetching data: ", error); // 오류 발생 시 메시지 출력
+    }
+}
+
 const Chat = {
     makeChatRoomElements: function (chatRooms) {
         const root = document.querySelector('#chat-list .list-group');
@@ -48,79 +59,64 @@ const Chat = {
         console.log('initChatRooms')
 
         const userId = this.getUserId();
-
-        fetch("/chatRoom/" + userId)
-        .then(response => {
-            console.log('response: ', response);
-            return response.json()
-        })
-        .then(data => {
-            console.log('data: ', data);
-            this.makeChatRoomElements(data);
-        })
-        .catch(error => {
-            console.log('error: ', error);
-        });
+        fetchData("/chatRoom/list?userId=" + userId)
+            .then(function(data){
+                this.makeChatRoomElements(data)
+            }.bind(this));
     },
     initChatWindow: function(roomId) {
-        console.log('initChatWindow: ', roomId)
-
+        /**  webSocket setting */
         // connect websocket
         ChatSocket.connect(roomId);
-
-        // 페이지를 벗어날 때 disconnect 호출
+        // disconnect websocket
         window.addEventListener('beforeunload', function(event) {
             ChatSocket.disconnect();
         });
 
-        // 채팅방 내부 보이기
-        const chatArea = document.getElementById('chat-area');
-        chatArea.classList.remove('hidden');
+        /** room 데이터로 채팅방 초기화 */
+        fetchData("/chatRoom/" + roomId + "?userId=" + this.getUserId())
+            .then(function(data){
+                // 채팅방 내부 보이기
+                const chatArea = document.getElementById('chat-area');
+                chatArea.classList.remove('hidden');
 
-        // 채팅방 제목에 닉네임 설정
-        const header = chatArea.querySelector('#chat-window .fixed-title');
-        header.innerText = roomObj.partner.nickname;
+                // 채팅방 제목에 닉네임 설정
+                const header = chatArea.querySelector('#chat-window .fixed-title');
+                header.innerText = roomObj.partner.nickname;
 
-        // 전송 버튼에 이벤트 추가 (기등록된 click 이벤트 리스너들은 삭제)
-        const sendBtn = chatArea.querySelector(".chat-input .send-button");
-        const sendBtnClicks = sendBtn.querySelectorAll('[onClick]');
-        sendBtnClicks.forEach(listener=> {
-            sendBtn.removeEventListener('click', listener);
-        });
-        sendBtn.addEventListener('click', function(){
-            this.sendMessage(roomObj);
-        }.bind(this));
+                // 전송 버튼에 이벤트 추가 (기등록된 click 이벤트 리스너들은 삭제)
+                const sendBtn = chatArea.querySelector(".chat-input .send-button");
+                const sendBtnClicks = sendBtn.querySelectorAll('[onClick]');
+                sendBtnClicks.forEach(listener=> {
+                    sendBtn.removeEventListener('click', listener);
+                });
+                sendBtn.addEventListener('click', function(){
+                    this.sendMessage(roomObj);
+                }.bind(this));
 
-        // input에 이벤트 추가
-        const input = chatArea.querySelector(".chat-input input");
-        const inputEnter = input.querySelectorAll('[onkeydown]');
-        inputEnter.forEach(listener=> {
-            sendBtn.removeEventListener('keydown', listener);
-        });
-        input.addEventListener('keydown', function(event){
-            console.log('onkeydown !!')
-            if(event.keyCode == 13) {// 13 is enter
-                this.sendMessage(roomObj);
-            }
-        }.bind(this));
+                // input에 이벤트 추가
+                const input = chatArea.querySelector(".chat-input input");
+                const inputEnter = input.querySelectorAll('[onkeydown]');
+                inputEnter.forEach(listener=> {
+                    sendBtn.removeEventListener('keydown', listener);
+                });
+                input.addEventListener('keydown', function(event){
+                    console.log('onkeydown !!')
+                    if(event.keyCode == 13) {// 13: Enter Key
+                        this.sendMessage(roomObj);
+                    }
+                }.bind(this));
 
-        // 대화 내용 불러오기
-        const params = new URLSearchParams();
-        params.append("roomId", roomObj.chatRoomId);
-        params.append('userId', this.getUserId());
+                // 대화 내용 불러오기
+                const params = new URLSearchParams();
+                params.append("roomId", roomObj.chatRoomId);
+                params.append('userId', this.getUserId());
 
-        fetch("/chat/message/recent/" + roomObj.chatRoomId)
-            .then(response => {
-                console.log('response: ', response);
-                return response.json()
-            })
-            .then(data => {
-                console.log('data: ', data);
-                this.makeChatMessageElements(data);
-            })
-            .catch(error => {
-                console.log('error: ', error);
-            });
+                fetchData("/chat/message/recent/" + roomObj.chatRoomId)
+                    .then(function(data){
+                    this.makeChatMessageElements(data)
+                }.bind(this));
+            }.bind(this));
     },
     makeChatMessageElements: function(data){
         const userId = this.getUserId();
@@ -139,7 +135,8 @@ const Chat = {
                 messageEl.setAttribute('class', 'chat-message partner');
 
             messageEl.appendChild(p);
-            messageRoot.appendChild(messageEl);
+            // messageRoot.appendChild(messageEl);
+            messageRoot.prepend(messageEl);
         }
     },
     sendMessage: function(roomObj) {
@@ -165,6 +162,9 @@ const Chat = {
         messageRoot.appendChild(messageEl);
     }
 }
+
+
+
 
 
 
