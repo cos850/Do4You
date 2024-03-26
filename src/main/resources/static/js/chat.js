@@ -75,7 +75,7 @@ const Chat = {
 
         /** room 데이터로 채팅방 초기화 */
         fetchData("/chatRoom/" + roomId + "?userId=" + this.getUserId())
-            .then(function(data){
+            .then(function(roomObj){
                 // 채팅방 내부 보이기
                 const chatArea = document.getElementById('chat-area');
                 chatArea.classList.remove('hidden');
@@ -101,7 +101,6 @@ const Chat = {
                     sendBtn.removeEventListener('keydown', listener);
                 });
                 input.addEventListener('keydown', function(event){
-                    console.log('onkeydown !!')
                     if(event.keyCode == 13) {// 13: Enter Key
                         this.sendMessage(roomObj);
                     }
@@ -114,8 +113,26 @@ const Chat = {
 
                 fetchData("/chat/message/recent/" + roomObj.chatRoomId)
                     .then(function(data){
-                    this.makeChatMessageElements(data)
+                        // 채팅 메세지 elements 추가
+                        this.makeChatMessageElements(data);
+
+                        // 스크롤 가장 아래로 내리기
                 }.bind(this));
+
+                // 스크롤 이벤트 추가
+                // window.addEventListener("scroll", function(){
+                //     if (window.y === 0) {
+                //         const newData = fetchDummyData();
+                //         prependDataToPage(newData);
+                //
+                //         // 새로운 콘텐츠를 추가한 후에도 같은 위치에 유지되도록 스크롤 조정
+                //         chatArea.scrollTop = chatArea.scrollHeight;
+                //     }
+                // }.bind(this))
+                // 스크롤이 최대 길이보다 길 경우 가장 마지막 데이터를 기준으로 데이터 요청
+                // 데이터를 다시 chat-messages div의 맨앞에 추가
+
+
             }.bind(this));
     },
     makeChatMessageElements: function(data){
@@ -135,7 +152,9 @@ const Chat = {
                 messageEl.setAttribute('class', 'chat-message partner');
 
             messageEl.appendChild(p);
+
             // messageRoot.appendChild(messageEl);
+
             messageRoot.prepend(messageEl);
         }
     },
