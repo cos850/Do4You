@@ -58,7 +58,6 @@ const Chat = {
             }
 
             roomNode.addEventListener('click', function(){
-                console.log('##### clickRoomNode')
                 this.initChatWindow(roomObj);
             }.bind(this));
 
@@ -100,6 +99,7 @@ const Chat = {
         /** room 데이터로 채팅방 초기화 */
         get("/chatRoom/" + roomId + "?userId=" + this.getUserId())
             .then(function(roomObj){
+                console.log('chat room info: ', roomObj)
                 // 채팅방 내부 보이기
                 const chatArea = document.getElementById('chat-area');
                 chatArea.classList.remove('hidden');
@@ -169,9 +169,6 @@ const Chat = {
                     }
                 }.bind(this));
 
-                // 스크롤이 최대 길이보다 길 경우 가장 마지막 데이터를 기준으로 데이터 요청
-                // 데이터를 다시 chat-messages div의 맨앞에 추가
-
 
             }.bind(this));
     },
@@ -218,6 +215,9 @@ const Chat = {
 
         messageEl.appendChild(p);
         messageRoot.appendChild(messageEl);
+
+        console.log('chat root: ' + messageRoot)
+        console.log('chat: ' + messageEl)
     }
 }
 

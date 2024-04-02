@@ -85,7 +85,7 @@
             <div id="chat-list">
                 <h3 class="fixed-title">채팅방 목록</h3>
                 <ul th:each="room : ${chatRooms}" class="list-group">
-                    <a class="list-group-item" th:onClick="Chat.initChatWindow(this.getAttribute('roomId'))" th:roomId="${room.chatRoomId}">
+                    <a class="list-group-item" th:roomId="${room.chatRoomId}" th:onClick="Chat.initChatWindow(this.getAttribute('roomId'))">
                         <div class="chatroom-header d-flex justify-content-between align-items-center">
                             <span th:text="${room.partner.nickname}" class="chatroom-name fw-bold"></span>
                             <span th:text="${room.unreadMessageCount}" class="chatroom-count badge bg-danger rounded-pill" disabled="true"></span>

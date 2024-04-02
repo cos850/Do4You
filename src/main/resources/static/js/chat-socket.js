@@ -1,14 +1,14 @@
 let stompClient = null;
 
 const ChatSocket = {
-    connect: function(roomObj) {
+    connect: function(roomId) {
         let socket = new SockJS('/chat/register');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
 
             // subscribe: 브로커가 보내는 메세지를 수신할 경로
-            stompClient.subscribe('/chat/room/' + roomObj.chatRoomId, function (response) {
+            stompClient.subscribe('/chat/room/' + roomId, function (response) {
                 console.log(response);
                 Chat.appendChatMessage(JSON.parse(response.body));
             }.bind(this));
