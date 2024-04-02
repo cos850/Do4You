@@ -2,11 +2,33 @@ const chatConst = {
     chatRoomIdAttrName: "data-room-id"
 }
 
-async function fetchData(url) {
+async function post(url, data, callback){
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        const responseData = await response.json();
+        console.log('request info: ' + url, ' \nresponse info: ', responseData);
+
+        if(callback) callback(responseData);
+
+        return responseData;
+    } catch(error) {
+        console.error("Error fetching data: ", error);
+    }
+}
+
+async function get(url, callback) {
     try {
         const response = await fetch(url);
         const data = await response.json(); // 서버로부터 받은 데이터를 JSON 형태로 변환
         console.log(url + ': ', data);  // 데이터 출력
+
+        if(callback) callback(data);
         return data;    // data => Promise.resolve(data)
     } catch (error) {
         console.error("Error fetching data: ", error); // 오류 발생 시 메시지 출력
@@ -59,22 +81,24 @@ const Chat = {
         console.log('initChatRooms')
 
         const userId = this.getUserId();
-        fetchData("/chatRoom/list?userId=" + userId)
+        get("/chatRoom/list?userId=" + userId)
             .then(function(data){
                 this.makeChatRoomElements(data)
             }.bind(this));
     },
     initChatWindow: function(roomId) {
+        let lastMessageObj = null;
+
         /**  webSocket setting */
         // connect websocket
         ChatSocket.connect(roomId);
         // disconnect websocket
-        window.addEventListener('beforeunload', function(event) {
+        window.addEventListener('beforeunload', function() {
             ChatSocket.disconnect();
         });
 
         /** room 데이터로 채팅방 초기화 */
-        fetchData("/chatRoom/" + roomId + "?userId=" + this.getUserId())
+        get("/chatRoom/" + roomId + "?userId=" + this.getUserId())
             .then(function(roomObj){
                 // 채팅방 내부 보이기
                 const chatArea = document.getElementById('chat-area');
@@ -107,28 +131,44 @@ const Chat = {
                 }.bind(this));
 
                 // 대화 내용 불러오기
+                const $chatWindow = document.getElementById('chat-window');
+                const messageRoot = document.getElementById("chat-messages");
+                messageRoot.innerHTML = ''; // 이전 채팅 내용 제거
+                
                 const params = new URLSearchParams();
                 params.append("roomId", roomObj.chatRoomId);
                 params.append('userId', this.getUserId());
 
-                fetchData("/chat/message/recent/" + roomObj.chatRoomId)
-                    .then(function(data){
+                get("/chat/message/recent/" + roomObj.chatRoomId, function(data){
+                    if(data){
                         // 채팅 메세지 elements 추가
                         this.makeChatMessageElements(data);
+                        lastMessageObj = data[data.length-1];
 
                         // 스크롤 가장 아래로 내리기
+                        $chatWindow.scrollTop = $chatWindow.scrollHeight;
+                    }
                 }.bind(this));
 
                 // 스크롤 이벤트 추가
-                // window.addEventListener("scroll", function(){
-                //     if (window.y === 0) {
-                //         const newData = fetchDummyData();
-                //         prependDataToPage(newData);
-                //
-                //         // 새로운 콘텐츠를 추가한 후에도 같은 위치에 유지되도록 스크롤 조정
-                //         chatArea.scrollTop = chatArea.scrollHeight;
-                //     }
-                // }.bind(this))
+                let isNotLoading = true;
+                $chatWindow.addEventListener("scroll", function(){
+                    if ($chatWindow.scrollTop === 0 && isNotLoading) {
+                        isNotLoading = false;
+
+                        post("/chat/message/page/" + roomObj.chatRoomId,
+                            lastMessageObj,
+                            function(data){
+                                if(data){
+                                    this.makeChatMessageElements(data);
+                                    lastMessageObj = data[data.length - 1];
+                                    isNotLoading = true;
+                                }
+                            }.bind(this)
+                        );
+                    }
+                }.bind(this));
+
                 // 스크롤이 최대 길이보다 길 경우 가장 마지막 데이터를 기준으로 데이터 요청
                 // 데이터를 다시 chat-messages div의 맨앞에 추가
 
@@ -138,7 +178,6 @@ const Chat = {
     makeChatMessageElements: function(data){
         const userId = this.getUserId();
         const messageRoot = document.getElementById("chat-messages");
-        messageRoot.innerHTML = '';
 
         console.log('init recent messages: ', data);
         for (let message of data) {
