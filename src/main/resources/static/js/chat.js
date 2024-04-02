@@ -36,34 +36,6 @@ async function get(url, callback) {
 }
 
 const Chat = {
-    makeChatRoomElements: function (chatRooms) {
-        const root = document.querySelector('#chat-list .list-group');
-
-        console.log('chatRooms: ', chatRooms);
-        for (let chatRoom of chatRooms) {
-            const roomObj = JSON.parse(JSON.stringify(chatRoom));
-
-            // element 복사
-            const roomNode = document.getElementById("chat-list-item-template").cloneNode(true);
-            roomNode.removeAttribute('id');
-            roomNode.classList.remove('hidden');
-            roomNode.setAttribute(chatConst.chatRoomIdAttrName, roomObj.chatRoomId);
-            roomNode.querySelector(".chatroom-name").innerText = roomObj.partner.nickname;
-            roomNode.querySelector(".chatroom-message").innerText = roomObj.lastMessage || '마지막메세지입니다.';
-
-            if(roomObj.unreadMessageCount >= 0) {
-                let countElement = roomNode.querySelector(".chatroom-count");
-                countElement.setAttribute('disabled', false);
-                countElement.innerText = roomObj.unreadMessageCount || '0';
-            }
-
-            roomNode.addEventListener('click', function(){
-                this.initChatWindow(roomObj);
-            }.bind(this));
-
-            root.appendChild(roomNode);
-        }
-    },
     getUserId: function () {
         // TODO : 로그인 후 변경
         let userId = localStorage.getItem("userId");
@@ -75,15 +47,6 @@ const Chat = {
         }
 
         return userId;
-    },
-    initChatRooms: function() {
-        console.log('initChatRooms')
-
-        const userId = this.getUserId();
-        get("/chatRoom/list?userId=" + userId)
-            .then(function(data){
-                this.makeChatRoomElements(data)
-            }.bind(this));
     },
     initChatWindow: function(roomId) {
         let lastMessageObj = null;
