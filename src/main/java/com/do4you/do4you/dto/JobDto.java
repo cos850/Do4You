@@ -10,8 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JobDto {
+    String id;
     String title;
     String content;
     String reward_type;
     String reward_content;
+    String location;
+    String geoLocationX;
+    String geoLocationY;
 }
