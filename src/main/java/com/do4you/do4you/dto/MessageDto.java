@@ -1,10 +1,15 @@
 package com.do4you.do4you.dto;
 
+import com.do4you.do4you.chat.message.MessageCommon;
 import com.do4you.do4you.model.Message;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+import static com.do4you.do4you.chat.message.MessageCommon.messageDateTimeFormatter;
 
 @Data
 @Builder
@@ -26,7 +31,7 @@ public class MessageDto {
                 .roomId(chatRoomId)
                 .userId(userId)
                 .content(content)
-                .sendAt(sendAt)
+                .sendAt(LocalDateTime.parse(sendAt, messageDateTimeFormatter))
                 .isChecked(isChecked)
                 .build();
     }
@@ -37,7 +42,7 @@ public class MessageDto {
                 .chatRoomId(doc.getRoomId())
                 .userId(doc.getUserId())
                 .content(doc.getContent())
-                .sendAt(doc.getSendAt())
+                .sendAt(doc.getSendAt().format(messageDateTimeFormatter))
                 .isChecked(doc.isChecked())
                 .build();
     }

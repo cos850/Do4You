@@ -46,7 +46,7 @@ public class ChatMessageTest {
             isMe = !isMe;
 
             testDatas.add(MessageDto.builder()
-                    .roomId(room.id)
+                    .chatRoomId(room.id)
                     .userId(userId)
                     .content(userId + " : " + i)
                     .sendAt("2024-02-24 10:00:" + String.format("%02d.000", i))
