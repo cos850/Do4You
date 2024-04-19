@@ -2,6 +2,8 @@ package com.do4you.do4you.user;
 
 import com.do4you.do4you.dto.UserDto;
 import com.do4you.do4you.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -10,21 +12,24 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        userRepository.save(User.builder()
-                .userId(userDto.getUserId())
-                .name(userDto.getName())
-                .email(userDto.getEmail())
-                .password(userDto.getPassword())
-                .nickname(userDto.getNickname())
-                .phoneNumber(userDto.getPhoneNumber())
-                .build());
+        User user = userDto.toDocument();
+
+        // 암호화되지 않은 패스워드는 시큐리티에서 로그인할 수 없음
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        // 권한 USER 로 설정
+        user.setRole(UserRole.USER);
+
+        userRepository.save(user);
 
         return getUserById(userDto.getUserId());
     }
@@ -32,13 +37,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserById(String userId) {
         User user = userRepository.findById(userId).orElseThrow();
-        return UserDto.builder()
-                .userId(user.getUserId())
-                .name(user.getName())
-                .email(user.getEmail())
-                .nickname(user.getNickname())
-                .phoneNumber(user.getPhoneNumber())
-                .build();
+        return UserDto.toDto(user);
     }
 
     @Override

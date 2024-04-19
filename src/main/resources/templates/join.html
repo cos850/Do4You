@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+</head>
+<body>
+<h2>회원가입</h2>
+<form id="registrationForm">
+    <div>
+        <label for="id">ID:</label>
+        <input type="text" id="id" name="userId" required>
+    </div>
+    <div>
+        <label for="name">이름:</label>
+        <input type="text" id="name" name="name" required>
+    </div>
+    <div>
+        <label for="email">이메일:</label>
+        <input type="email" id="email" name="email" required>
+    </div>
+    <div>
+        <label for="password">비밀번호:</label>
+        <input type="password" id="password" name="password" required>
+    </div>
+    <div>
+        <label for="nickname">닉네임:</label>
+        <input type="text" id="nickname" name="nickname" required>
+    </div>
+    <div>
+        <label for="phone">전화번호:</label>
+        <input type="tel" id="phone" name="phoneNumber" required>
+    </div>
+    <div>
+        <input type="submit" value="가입">
+    </div>
+</form>
+
+<script>
+    document.getElementById("registrationForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // 기본 제출 동작 방지
+
+        // 사용자 입력 가져오기
+        var formData = new FormData(this);
+
+        // 서버로 전송
+        fetch('/auth/join', {
+            method: 'POST',
+            body: formData
+        })
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(function(data) {
+            console.log(data);
+            alert('회원가입이 완료되었습니다!');
+
+            // 로그인 페이지로 이동
+            window.location.replace("/auth/login");
+        })
+        .catch(function(error) {
+            // 오류 처리
+            console.error('There has been a problem with your fetch operation:', error);
+            alert('회원가입에 실패했습니다. 다시 시도해주세요.');
+        });
+    });
+</script>
+</body>
+</html>

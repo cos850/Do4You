@@ -1,11 +1,15 @@
 package com.do4you.do4you.model;
 
+import com.do4you.do4you.user.UserRole;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.sql.Timestamp;
 
 @ToString
 @Getter
@@ -14,21 +18,27 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class User {
 
     @Id
-    private String userId;  // MongoDBRepository 가 Id String 타입을 기본 지원해준다고해서 일단 Long 대신 String 으로 변경
+    private String userId;
     private String name;
     private String email;
     private String password;
     private String nickname;
     private String phoneNumber;
 
+    private UserRole role;
+
+    @CreatedDate
+    private Timestamp createdAt;
+
     @Builder
-    public User(String userId, String name, String email, String password, String nickname, String phoneNumber) {
+    public User(String userId, String name, String email, String password, String nickname, String phoneNumber, UserRole role) {
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.phoneNumber = phoneNumber;
+        this.role = role;
     }
 
     public void setName(String name) {
@@ -49,5 +59,9 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public void setRole(UserRole role){
+        this.role = role;
     }
 }

@@ -20,11 +20,6 @@ public class UserController {
         return userService.getUserById(userId);
     }
 
-    @PostMapping
-    public UserDto createUser(@RequestBody UserDto userDto) {
-        return userService.createUser(userDto);
-    }
-
     @DeleteMapping("/{userId}")
     public String deleteUser(@PathVariable String userId){
         userService.deleteUserById(userId);
