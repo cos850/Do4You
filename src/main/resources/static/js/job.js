@@ -64,9 +64,8 @@ function deleteContent() {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        alert(JSON.stringify(response));
+        alert("글이 삭제되었습니다.");
         window.location.href = '/jobList.html';
-//        return response.json(); // Assuming the response contains JSON data
     })
 
     .catch(error => {
