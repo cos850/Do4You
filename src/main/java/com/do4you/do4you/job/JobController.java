@@ -1,5 +1,7 @@
 package com.do4you.do4you.job;
 
+import com.do4you.do4you.dto.JobDto;
+import com.do4you.do4you.dto.ResponseDto;
 import com.do4you.do4you.model.Job;
 import com.mongodb.client.MongoClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -21,13 +22,10 @@ public class JobController {
     @Autowired
     private JobRepository jobRepository;
 
+    // 글 상세보기
     @GetMapping("/jobList/{id}")
     public String findById(@PathVariable String id, Model model) {
-        System.out.println("id:"+id);
-        List<Job> jobList = jobRepository.findAll();
         Job jobId = jobService.details(id);
-        System.out.println(jobId);
-        System.out.println("jobList.get(0).getId():"+jobList.get(0).getId());
         model.addAttribute("jobs", jobId);
         return "jobDetail";
     }
@@ -37,14 +35,6 @@ public class JobController {
         List<Job> jobList = jobRepository.findAll();
         model.addAttribute("jobs", jobList);
         return "jobList";
-    }
-
-    @GetMapping("/jobDetail.html")
-    public String getJobDetail(Model model) {
-        List<Job> jobList = jobRepository.findAll();
-        System.out.println("jobList:" + jobList);
-        model.addAttribute("jobs", jobList);
-        return "jobDetail";
     }
 
     @GetMapping
@@ -57,36 +47,34 @@ public class JobController {
         return "jobWrite";
     }
 
-    // 글 상세보기
     @GetMapping("/job/{id}")
-//    public String getJobById(@PathVariable String id, Model model) {
     public String getJobById(Model model) {
-        List<Job> jobList = new ArrayList<>();
-
-//        MongoCollection<Document> collection = client.getDatabase("Do4You").getCollection("Job");
-//        collection.find().map(Document::toJson).forEach(jobList::add());
-
         List<Job> jobLists = jobRepository.findAll();
         System.out.println("jobLists:"+jobLists);
-        // MongoDB에서 작업을 가져옵니다.
-//        Job job = jobRepository.findById(id).orElse(null);
-
-//        System.out.println("22@@##@job:" + job);
-
-//        model.addAttribute("job", job);
-//        return job.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
         return "jobDetail";
     }
 
-    @PutMapping("/{id}")
-    public Job updateJob(@PathVariable String id, @RequestBody Job job) {
-        job.setId(id);
-        return jobRepository.save(job);
+
+    @GetMapping("/jobDetail/edit/{id}")
+    public String editJob(@PathVariable String id, Model model) {
+        System.out.println("jobRepository.findById(id).get():" +jobRepository.findById(id).get());
+        model.addAttribute("jobs", jobRepository.findById(id).get());
+        return "jobEdit";
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteJob(@PathVariable String id) {
-        jobRepository.deleteById(id);
+    // 글 수정
+    @PostMapping("/jobDetail/{id}/update")
+    @ResponseBody
+    public ResponseDto<String> updateJob(@PathVariable String id, @RequestBody JobDto jobDto) {
+        jobService.update(id, jobDto);
+        return new ResponseDto<String>("ok", jobDto.getId());
+    }
+
+    // 글 삭제
+    @DeleteMapping("/jobDetail/{id}/delete")
+    public String deleteJob(@PathVariable String id) {
+        jobService.delete(id);
+        return "jobList";
     }
 }
 

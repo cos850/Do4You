@@ -53,25 +53,24 @@ function editContent() {
 function deleteContent() {
     let id =  document.getElementById("id").value;
 
-    let data = {
-        id: document.getElementById("id").value,
-    };
-
-    fetch('/jobDetail/' + data.id + '/delete', {
-        method: 'POST', // 또는 다른 HTTP 메소드 사용
+    fetch('/jobDetail/' + id + '/delete', {
+        method: 'DELETE',
         headers: {
             'Content-Type': 'application/json; charset=utf-8;',
         },
-        body: JSON.stringify(data)
+//        body: JSON.stringify({ id: id })
     })
     .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        window.location.href = '/jobList/' ;
+        alert(JSON.stringify(response));
+        window.location.href = '/jobList.html';
+//        return response.json(); // Assuming the response contains JSON data
     })
 
     .catch(error => {
         console.error('There was a problem with your fetch operation:', error);
     });
+
 }
