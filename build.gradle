@@ -46,6 +46,9 @@ dependencies {
 	implementation 'org.webjars:stomp-websocket:2.3.3'
 	implementation 'org.webjars:jquery:3.1.1-1'
 
+//	// dto 자동 생성 annotation
+//	implementation 'com.do4you.do4you:do4you-annotation-library:1.0.0'
+//	implementation project()
 }
 
 tasks.named('test') {
