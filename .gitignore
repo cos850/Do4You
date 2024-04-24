@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+## DataBase
+# src/main/resources/database.properties
