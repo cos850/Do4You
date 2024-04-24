@@ -1,7 +1,7 @@
 package com.do4you.do4you.dto;
 
+import com.do4you.do4you.common.UserRole;
 import com.do4you.do4you.model.User;
-import com.do4you.do4you.user.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +23,8 @@ public class UserDto {
 
     private UserRole role;
 
-    private String createdAt;
+    private String createdDate;
+    private String lastModifiedDate;
 
     public User toDocument(){
         return User.builder()
@@ -46,7 +47,7 @@ public class UserDto {
                 .nickname(user.getNickname())
                 .phoneNumber(user.getPhoneNumber())
                 .role(user.getRole())
-                .createdAt(dateTimeFormatter.format(user.getCreatedAt()))
+                .createdDate(user.getCreatedDate().format(dateTimeFormatter))
                 .build();
     }
 }

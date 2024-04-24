@@ -1,4 +1,4 @@
-package com.do4you.do4you.user;
+package com.do4you.do4you.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

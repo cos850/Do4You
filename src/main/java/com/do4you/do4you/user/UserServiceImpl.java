@@ -1,5 +1,6 @@
 package com.do4you.do4you.user;
 
+import com.do4you.do4you.common.UserRole;
 import com.do4you.do4you.dto.UserDto;
 import com.do4you.do4you.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserById(String userId) {
         User user = userRepository.findById(userId).orElseThrow();
+        System.out.println("User: " + user);
         return UserDto.toDto(user);
     }
 

@@ -1,21 +1,24 @@
 package com.do4you.do4you.model;
 
-import com.do4you.do4you.user.UserRole;
+import com.do4you.do4you.common.UserRole;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @ToString
 @Getter
 @NoArgsConstructor
 @Document(collection = "User")
-public class User {
+public class User implements Persistable {
 
     @Id
     private String userId;
@@ -28,10 +31,13 @@ public class User {
     private UserRole role;
 
     @CreatedDate
-    private Timestamp createdAt;
+    private LocalDateTime createdDate;
+
+    @LastModifiedDate
+    private LocalDateTime lastModifiedDate;
 
     @Builder
-    public User(String userId, String name, String email, String password, String nickname, String phoneNumber, UserRole role) {
+    public User(String userId, String name, String email, String password, String nickname, String phoneNumber, UserRole role, LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
         this.userId = userId;
         this.name = name;
         this.email = email;
@@ -39,6 +45,8 @@ public class User {
         this.nickname = nickname;
         this.phoneNumber = phoneNumber;
         this.role = role;
+        this.createdDate = createdDate;
+        this.lastModifiedDate = lastModifiedDate;
     }
 
     public void setName(String name) {
@@ -63,5 +71,15 @@ public class User {
 
     public void setRole(UserRole role){
         this.role = role;
+    }
+
+    @Override
+    public Object getId() {
+        return userId;
+    }
+
+    @Override
+    public boolean isNew() {
+        return createdDate == null;
     }
 }
