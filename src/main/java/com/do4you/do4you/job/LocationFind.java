@@ -17,8 +17,9 @@ public class LocationFind {
 
     public List<String> getLocation(String address) throws Exception{
         // 업로드 하기 전 확인 확인 확인
-        String clientId = "";
-        String clientSecret = "";
+        // 네이버 geocode API 사용
+        String clientId = "ftcvgn37nv";
+        String clientSecret = "X49dQDaB49bP3yU5kTMoF221z0xkVquxB3DtoQm9";
         String inputLine;
 
         try {
@@ -30,7 +31,7 @@ public class LocationFind {
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
 
-            // Geocoding 개요에 나와있는 요청 헤더 입력.
+            // https://api.ncloud-docs.com/docs/ai-naver-mapsgeocoding 의 요청 헤더 입력
             con.setRequestProperty("X-NCP-APIGW-API-KEY-ID", clientId);
             con.setRequestProperty("X-NCP-APIGW-API-KEY", clientSecret);
 
