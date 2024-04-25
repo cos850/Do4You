@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Location</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+<div id="map" style="height: 400px;"></div>
+
+<script>
+        // Initialize Leaflet map
+        var map = L.map('map').setView([0, 0], 13);
+
+        // Add tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Function to add marker to the map
+        function addMarker(lat, lng) {
+            L.marker([lat, lng]).addTo(map)
+                .bindPopup('Your Current Location')
+                .openPopup();
+        }
+
+        // Function to get current location and add marker to the map
+        function getCurrentLocation() {
+            navigator.geolocation.getCurrentPosition(function(pos) {
+                var latitude = pos.coords.latitude;
+                var longitude = pos.coords.longitude;
+                alert("현재 위치는 : " + latitude + ", "+ longitude);
+                addMarker(latitude, longitude);
+            });
+        }
+
+        // Call the function to get current location
+        getCurrentLocation();
+    </script>
+</body>
+</html>
