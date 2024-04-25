@@ -95,10 +95,8 @@
 
     <!-- JavaScript block -->
     <script>
-        // This JavaScript code will execute after the DOM is fully loaded
         document.addEventListener('DOMContentLoaded', function() {
-            console.log("DOM fully loaded and parsed.");
-            // You can add your JavaScript logic here
+            window.history.pushState({}, '', '/jobList');
         });
     </script>
 </body>
