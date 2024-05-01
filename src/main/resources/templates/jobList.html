@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Details</title>
+    <style>
+        /* Your CSS styles */
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <div class="job-detail" th:each="job : ${jobs}">
+            <a th:href="@{/jobList/{id}(id=${job.id})}">
+                <p><strong>Title:</strong> <span th:text="${job.title}"></span></p>
+                <p><strong>Content:</strong> <span th:text="${job.content}"></span></p>
+                <p><strong>Reward Type:</strong> <span th:text="${job.reward_type}"></span></p>
+                <p><strong>Reward Content:</strong> <span th:text="${job.reward_content}"></span></p>
+                <p><strong>Location:</strong> <span th:text="${job.location}"></span></p>
+            </a>
+        </div>
+    </div>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        window.history.pushState({}, '', '/jobList.html');
+    });
+</script>
+</html>
