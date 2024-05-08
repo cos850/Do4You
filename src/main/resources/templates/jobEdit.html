@@ -55,8 +55,20 @@
 
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src="/js/map.js"></script>
-
 <script src="/js/job.js"></script>
+<script>
+// 이전에 확인한 우편번호 값 저장
+var previousPostcodeValue = document.getElementById("sample6_postcode").value;
+
+// 주기적으로 우편번호 값 확인
+setInterval(function() {
+    var currentPostcodeValue = document.getElementById("sample6_postcode").value;
+    if (currentPostcodeValue !== previousPostcodeValue) {
+        document.getElementById("location").value = " ";
+    }
+}, 1000); // 1초마다 확인
+
+</script>
 
 
 </html>
