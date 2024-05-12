@@ -12,18 +12,18 @@ options.forEach(function(option) {
 
 function editContent() {
     let id =  document.getElementById("id").value;
-
     let data = {
         id: document.getElementById("id").value,
         title:document.getElementById("title").value,
         content:document.getElementById("content").value,
         reward_type:document.getElementById("reward_type").value,
         reward_content:document.getElementById("reward_content").value,
-        location:document.getElementById("location").value,
+        location:document.getElementById("sample6_address").value + " " + document.getElementById("sample6_detailAddress").value,
         geoLocationX: document.getElementById("geoLocationX").value,
         geoLocationY: document.getElementById("geoLocationY").value,
     };
 
+    console.log('data.location', data.location)
     fetch('/jobDetail/' + data.id + '/update', {
         method: 'POST', // 또는 다른 HTTP 메소드 사용
         headers: {
