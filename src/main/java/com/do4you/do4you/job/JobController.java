@@ -54,7 +54,6 @@ public class JobController {
         return "jobDetail";
     }
 
-
     @GetMapping("/jobDetail/edit/{id}")
     public String editJob(@PathVariable String id, Model model) {
         System.out.println("jobRepository.findById(id).get():" +jobRepository.findById(id).get());
@@ -62,10 +61,18 @@ public class JobController {
         return "jobEdit";
     }
 
+    // 글쓰기
+    @PostMapping("/jobWrite")
+    public String writeJob(@RequestBody Job job) throws Exception{
+        jobService.writeJob(job);
+        return "jobList";
+    }
+
     // 글 수정
     @PostMapping("/jobDetail/{id}/update")
     @ResponseBody
-    public ResponseDto<String> updateJob(@PathVariable String id, @RequestBody JobDto jobDto) {
+    public ResponseDto<String> updateJob(@PathVariable String id, @RequestBody JobDto jobDto) throws Exception {
+        System.out.println("jobDto" + jobDto);
         jobService.update(id, jobDto);
         return new ResponseDto<String>("ok", jobDto.getId());
     }
