@@ -1,5 +1,6 @@
 package com.do4you.do4you.job;
 
+import com.do4you.do4you.dto.GeoDto;
 import com.do4you.do4you.dto.JobDto;
 import com.do4you.do4you.model.Job;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -25,14 +27,35 @@ public class JobService {
                 });
     }
 
+    // 글 쓰기
+    public String writeJob(Job job) throws Exception {
+        GeoDto geoDto = location(job);
+        job.setGeoLocation(new GeoJsonPoint(Double.parseDouble(geoDto.getLatitude()
+        ), Double.parseDouble(geoDto.getLongitude())));
+        job.setCreate_at(getTime());
+
+        jobRepository.save(job);
+        return "ok";
+    }
+
     // 글 수정
-    public String update(String id, JobDto jobDto) {
+    public String update(String id, JobDto jobDto) throws Exception {
         System.out.println("jobDto:"+jobDto);
-        // 현재 시간 가져오기
-        Date date = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS");
-        String currentTime = format.format(date);
-        System.out.println("currentTime:"+currentTime);
+
+        // 사용자가 입력한 주소
+        String addr = jobDto.getLocation();
+        LocationFind lf = new LocationFind();
+        // 입력된 주소에서 위도, 경도 가져옴
+        List<String> locationList = lf.getLocation(addr);
+
+        System.out.println("@@@@locationList:"+ locationList);
+
+        GeoDto geoDto = new GeoDto();
+        //위도 설정
+        geoDto.setLatitude(String.valueOf(locationList.get(0)));
+        //경도 설정
+        geoDto.setLongitude(String.valueOf(locationList.get(1)));
+
 
         Job jobList = Job.builder()
                 .id(jobDto.getId())
@@ -41,9 +64,9 @@ public class JobService {
                 .location(jobDto.getLocation())
                 .reward_content(jobDto.getReward_content())
                 .reward_type(jobDto.getReward_type())
-                .update_at(currentTime)
-                .geoLocation(new GeoJsonPoint(Double.parseDouble(jobDto.getGeoLocationX()
-                ), Double.parseDouble(jobDto.getGeoLocationY())))
+                .update_at(getTime())
+                .geoLocation(new GeoJsonPoint(Double.parseDouble(geoDto.getLatitude()
+                ), Double.parseDouble(geoDto.getLongitude())))
                 .build();
 
         jobRepository.save(jobList);
@@ -55,4 +78,30 @@ public class JobService {
     public void delete(String id) {
         jobRepository.deleteById(id);
     }
+
+    public GeoDto location(Job job) throws Exception {
+        // 사용자가 입력한 주소
+        String addr = job.getLocation();
+        LocationFind lf = new LocationFind();
+
+        // 입력된 주소에서 위도, 경도 가져옴
+        List<String> locationList = lf.getLocation(addr);
+
+        GeoDto geoDto = new GeoDto();
+        //위도 설정
+        geoDto.setLatitude(String.valueOf(locationList.get(0)));
+        //경도 설정
+        geoDto.setLongitude(String.valueOf(locationList.get(1)));
+
+        return geoDto;
+    }
+
+    public String getTime(){
+        //작성 시간 설정
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS");
+        String currentTime = format.format(date);
+        return currentTime;
+    }
+
 }
