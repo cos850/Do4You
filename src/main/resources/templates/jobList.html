@@ -10,8 +10,19 @@
 
 </head>
 <body>
+    <div class="searchCondition">
+        <select id="reward_type" name="reward_type" required>
+            <option value="">All</option> <!-- Option to show all jobs -->
+
+            <!-- Options should be added here, either statically or dynamically -->
+            <option th:each="rewardType : ${rewardTypes}"
+                    th:value="${rewardType}"
+                    th:text="${rewardType}">
+            </option>
+        </select>
+    </div>
     <div class="container">
-        <div class="job-detail" th:each="job : ${jobs}">
+        <div class="job-detail" th:each="job : ${jobs}" th:data-reward-type="${job.reward_type}">
             <a th:href="@{/jobList/{id}(id=${job.id})}">
                 <p><strong>Title:</strong> <span th:text="${job.title}"></span></p>
                 <p><strong>Content:</strong> <span th:text="${job.content}"></span></p>
@@ -22,9 +33,30 @@
         </div>
     </div>
 </body>
+<script src="/js/job.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         window.history.pushState({}, '', '/jobList.html');
+
+        const rewardTypeSelect = document.getElementById('reward_type');
+        const jobDetails = document.querySelectorAll('.job-detail');
+
+        rewardTypeSelect.addEventListener('change', function() {
+            const selectedRewardType = this.value;
+
+            jobDetails.forEach(function(jobDetail) {
+                const jobRewardType = jobDetail.getAttribute('data-reward-type');
+
+                console.log('jobRewardType', jobRewardType);
+
+                if (selectedRewardType === "" || jobRewardType === selectedRewardType) {
+                    jobDetail.style.display = ''; // Show job
+                } else {
+                    jobDetail.style.display = 'none'; // Hide job
+                }
+            });
+        });
     });
 </script>
+
 </html>
